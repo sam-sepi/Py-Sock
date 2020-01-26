@@ -1,3 +1,12 @@
+# Socket error:
+
+# 10061 Conn. Refused
+# No connection could be made because the target computer actively refused it.
+
+# 10035 Resource temporarily unavailable.
+# This error is returned from operations on nonblocking sockets 
+# that cannot be completed immediately, for example recv when 
+# no data is queued to be read from the socket.
 
 import socket
 
@@ -16,11 +25,11 @@ def scanner(address, port, delay):
             s.close()
         
         elif ret == 10061:
-            print(str(port) + ' is Filtered')
+            print('Connection refused on port ' + str(port)) 
             s.close()
         
-        else:
-            print(str(port) + ' is Closed')
+        elif ret == 10035:
+            print('Resource temporarily unavailable on port ' + str(port))
             s.close()
 
     except Exception:
@@ -32,14 +41,14 @@ for port in targets:
     scanner('hackthissite.org', port, 5)
 
 """
-21 is Closed
-22 is Filtered
-25 is Closed
+Resource temporarily unavailable on port 21
+Connection refused on port 22
+Resource temporarily unavailable on port 25
 80 is Open
-8080 is Closed
-110 is Closed
-143 is Closed
-156 is Closed
-194 is Closed
+Resource temporarily unavailable on port 8080
+Resource temporarily unavailable on port 110
+Resource temporarily unavailable on port 143
+Resource temporarily unavailable on port 156
+Resource temporarily unavailable on port 194
 443 is Open
 """
