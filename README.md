@@ -10,7 +10,7 @@ This repository is essentially a socket programming exercise in python. Each fil
 
 *Client.py* and *Server.py* simulate the client server architecture.
 
-*Portscanner.py* is a simple port scanner written in python
+*Portscanner.py* is a simple port scanner written in python with multi - threading
 
 # Author
 Sam Sepi - Initial work

@@ -9,6 +9,12 @@
 # no data is queued to be read from the socket.
 
 import socket
+import time
+
+# The concurrent.futures module provides a high-level interface 
+# for asynchronously executing callables.
+
+import concurrent.futures
 
 def scanner(address, port, delay):
 
@@ -31,24 +37,42 @@ def scanner(address, port, delay):
         elif ret == 10035:
             print('Resource temporarily unavailable on port ' + str(port))
             s.close()
+        
+        else:
+            print('Errno ' + ret + ' on port ' + port) # print socket errno
 
     except Exception:
         pass
 
 targets = [21, 22, 25, 80, 8080, 110, 143, 156, 194, 443]
 
-for port in targets:
-    scanner('hackthissite.org', port, 5)
+
+# Execute
+start_time = time.time()
+
+NUM_WORKERS = 4
+ 
+start_time = time.time()
+ 
+with concurrent.futures.ThreadPoolExecutor(max_workers = NUM_WORKERS) as executor:
+    futures = {executor.submit(scanner, 'mysitetest.org', port, 5) for port in targets}
+    concurrent.futures.wait(futures)
+ 
+end_time = time.time()
+
+print("Time execution: %s secs" % (end_time - start_time))
 
 """
-Resource temporarily unavailable on port 21
-Connection refused on port 22
-Resource temporarily unavailable on port 25
+21 is Open
 80 is Open
-Resource temporarily unavailable on port 8080
-Resource temporarily unavailable on port 110
-Resource temporarily unavailable on port 143
-Resource temporarily unavailable on port 156
-Resource temporarily unavailable on port 194
+Connection refused on port 110
+Connection refused on port 8080
+Connection refused on port 156
+Connection refused on port 143
 443 is Open
+Connection refused on port 194
+Resource temporarily unavailable on port 25
+Resource temporarily unavailable on port 22
+Time execution: 5.011286735534668 secs
+
 """
